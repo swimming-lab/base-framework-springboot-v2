@@ -1,0 +1,101 @@
+
+spring:
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 10MB
+      file-size-threshold: 0
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        open-in-view: false
+    defer-datasource-initialization: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+server:
+  servlet:
+    context-path: /api
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  override-with-generic-response: false
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:mydb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;
+    username: sa
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 2
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  redis:
+    host: localhost
+    port: 6379
+server:
+  port: 8080
+environment:
+  app:
+    test: test
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+jwt:
+  auth:
+    token:
+      sign-key: signKey012345678901234567890123456789
+      valid-time: 30000000
+security:
+  allowedOrigins: http://localhost:3000,http://localhost:3001
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url:
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+    #driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
+server:
+  port: 8000
+environment:
+  app:
+    test: test
+jwt:
+  auth:
+    token:
+      sign-key: signKey012345678901234567890123456789
+      valid-time: 3000000
