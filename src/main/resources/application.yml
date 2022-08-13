@@ -1,4 +1,3 @@
-
 spring:
   profiles:
     active: local
@@ -74,8 +73,6 @@ jwt:
     token:
       sign-key: signKey012345678901234567890123456789
       valid-time: 30000000
-security:
-  allowedOrigins: http://localhost:3000,http://localhost:3001
 ---
 spring:
   config:

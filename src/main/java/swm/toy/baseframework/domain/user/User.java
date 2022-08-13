@@ -1,6 +1,7 @@
 package swm.toy.baseframework.domain.user;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import swm.toy.baseframework.domain.common.BaseEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Table(name = "users")
 @Entity
-public class User {
+public class User extends BaseEntity {
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
@@ -33,14 +34,28 @@ public class User {
     @OneToMany(cascade = REMOVE)
     private Set<User> followingUsers = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities = new HashSet<>();
+
     static User of(Email email, UserName name, Password password) {
-        return new User(email, new Profile(name), password);
+        return new User(email, new Profile(name), password, null);
     }
 
-    private User(Email email, Profile profile, Password password) {
+    static User of(Email email, UserName name, Password password, Authority authority) {
+        return new User(email, new Profile(name), password, authority);
+    }
+
+    private User(Email email, Profile profile, Password password, Authority authority) {
         this.email = email;
         this.profile = profile;
         this.password = password;
+        if (authority != null) {
+            this.authorities.add(authority);
+        }
     }
 
     protected User() {

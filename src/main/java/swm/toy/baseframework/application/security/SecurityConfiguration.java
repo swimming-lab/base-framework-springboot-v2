@@ -1,18 +1,17 @@
 package swm.toy.baseframework.application.security;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
 import swm.toy.baseframework.domain.jwt.JWTDeserializer;
 
 import java.util.List;
@@ -20,29 +19,44 @@ import java.util.List;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-@EnableConfigurationProperties(SecurityConfigurationProperties.class)
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
-
-    private final SecurityConfigurationProperties properties;
-
-    SecurityConfiguration(SecurityConfigurationProperties properties) {
-        this.properties = properties;
-    }
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(POST, "/users", "/users/login");
+        web.ignoring()
+                .antMatchers(
+                        "/favicon.ico",
+                        "/error",
+                        "/h2/**",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs"
+                );
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.cors();
-        http.formLogin().disable();
+        http.cors().configurationSource(request -> {
+            var cors = new CorsConfiguration();
+            cors.setAllowedOrigins(
+                    List.of("http://localhost:8080", "https://editor.swagger.io"));
+            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            cors.setAllowedHeaders(List.of("*"));
+            return cors;
+        });
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .and();
+        http = http.formLogin().disable()
+                .headers().frameOptions().sameOrigin().and();
         http.logout().disable();
         http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
+                .antMatchers(POST, "/users", "/users/login").permitAll()
                 .antMatchers(GET, "/profiles/*").permitAll()
                 .antMatchers(GET, "/articles/**").permitAll()
                 .antMatchers(GET, "/tags/**").permitAll()
@@ -57,28 +71,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("GET", "HEAD", "POST", "DELETE", "PUT")
-                .allowedOrigins(properties.getAllowedOrigins().toArray(new String[0]))
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
-}
-
-@ConstructorBinding
-@ConfigurationProperties("security")
-class SecurityConfigurationProperties {
-    private final List<String> allowedOrigins;
-
-    SecurityConfigurationProperties(List<String> allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
-    }
-
-    public List<String> getAllowedOrigins() {
-        return allowedOrigins;
     }
 }

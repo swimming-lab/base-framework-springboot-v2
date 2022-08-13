@@ -1,14 +1,11 @@
 package swm.toy.baseframework.domain.user;
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-interface UserRepository extends Repository<User, Long> {
+interface UserRepository extends JpaRepository<User, Long> {
 
-    User save(User user);
-
-    Optional<User> findById(long id);
     Optional<User> findFirstByEmail(Email email);
     Optional<User> findFirstByProfileUserName(UserName userName);
 
