@@ -1,5 +1,6 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import swm.toy.baseframework.domain.jwt.JWTPayload;
 import swm.toy.baseframework.domain.user.User;
 
@@ -9,6 +10,7 @@ import static java.time.Instant.now;
 
 public class UserJWTPayload implements JWTPayload {
 
+
     private final long sub;
     private final String name;
     private final long iat;
@@ -17,7 +19,9 @@ public class UserJWTPayload implements JWTPayload {
         return new UserJWTPayload(user.getId(), valueOf(user.getEmail()), epochSecondExpired);
     }
 
-    UserJWTPayload(long sub, String name, long iat) {
+    UserJWTPayload(@JsonProperty("sub") long sub,
+                   @JsonProperty("name") String name,
+                   @JsonProperty("iat") long iat) {
         this.sub = sub;
         this.name = name;
         this.iat = iat;

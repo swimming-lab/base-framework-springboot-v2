@@ -11,10 +11,12 @@ import java.util.List;
 @JsonTypeName("errors")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public class ErrorMessages {
-    private final List<String> body;
 
-    public ErrorMessages() {
-        body = new ArrayList<>();
+    private final int status;
+    private final List<String> body = new ArrayList<>();;
+
+    ErrorMessages(int status) {
+        this.status = status;
     }
 
     public void append(String message) {
