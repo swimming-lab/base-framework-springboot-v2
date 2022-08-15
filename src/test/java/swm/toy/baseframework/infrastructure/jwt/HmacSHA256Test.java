@@ -1,19 +1,17 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
-import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
 
 class HmacSHA256Test {
 
     @Test
     void when_invalid_secret_expect_throw_exception() {
-        assertThatThrownBy(
-                () -> HmacSHA256.sign(null, "test")
-        ).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> HmacSHA256.sign(null, "test"))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test

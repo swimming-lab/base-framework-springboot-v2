@@ -1,8 +1,8 @@
 package swm.toy.baseframework.domain.user;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
 
 @Embeddable
 public class Image {
@@ -14,8 +14,7 @@ public class Image {
         this.address = address;
     }
 
-    protected Image() {
-    }
+    protected Image() {}
 
     @Override
     public String toString() {

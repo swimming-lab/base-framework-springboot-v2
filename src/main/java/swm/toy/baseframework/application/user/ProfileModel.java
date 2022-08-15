@@ -17,13 +17,12 @@ public class ProfileModel {
     @Value
     public static class ProfileModelNested {
         String username;
-        String bio;
         String image;
         boolean following;
 
         public static ProfileModelNested fromProfile(Profile profile) {
-            return new ProfileModelNested(valueOf(profile.getUserName()),
-                    profile.getBio(),
+            return new ProfileModelNested(
+                    valueOf(profile.getUserName()),
                     valueOf(profile.getImage()),
                     profile.isFollowing());
         }

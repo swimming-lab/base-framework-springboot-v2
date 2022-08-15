@@ -1,29 +1,39 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import swm.toy.baseframework.domain.jwt.JWTPayload;
-import swm.toy.baseframework.domain.user.User;
-
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.time.Instant.now;
 
-public class UserJWTPayload implements JWTPayload {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.stream.Collectors;
+import swm.toy.baseframework.domain.jwt.JWTPayload;
+import swm.toy.baseframework.domain.user.Authority;
+import swm.toy.baseframework.domain.user.User;
 
+public class UserJWTPayload implements JWTPayload {
 
     private final long sub;
     private final String name;
+    private final String auth;
     private final long iat;
 
     static UserJWTPayload of(User user, long epochSecondExpired) {
-        return new UserJWTPayload(user.getId(), valueOf(user.getEmail()), epochSecondExpired);
+        String auth =
+                user.getAuthorities().stream()
+                        .map(Authority::getAuthorityName)
+                        .collect(Collectors.joining(","));
+
+        return new UserJWTPayload(user.getId(), valueOf(user.getEmail()), auth, epochSecondExpired);
     }
 
-    UserJWTPayload(@JsonProperty("sub") long sub,
-                   @JsonProperty("name") String name,
-                   @JsonProperty("iat") long iat) {
+    UserJWTPayload(
+            @JsonProperty("sub") long sub,
+            @JsonProperty("name") String name,
+            @JsonProperty("auth") String auth,
+            @JsonProperty("iat") long iat) {
         this.sub = sub;
         this.name = name;
+        this.auth = auth;
         this.iat = iat;
     }
 
@@ -38,7 +48,13 @@ public class UserJWTPayload implements JWTPayload {
     }
 
     @Override
+    public String getAuth() {
+        return auth;
+    }
+
+    @Override
     public String toString() {
-        return format("{\"sub\":%d,\"name\":\"%s\",\"iat\":%d}", sub, name, iat);
+        return format(
+                "{\"sub\":%d,\"name\":\"%s\",\"auth\":\"%s\",\"iat\":%d}", sub, name, auth, iat);
     }
 }

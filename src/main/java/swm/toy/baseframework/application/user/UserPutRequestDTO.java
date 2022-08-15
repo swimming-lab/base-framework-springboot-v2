@@ -24,7 +24,6 @@ class UserPutRequestDTO {
     String email;
     String username;
     String password;
-    String bio;
     String image;
 
     UserUpdateRequest toUpdateRequest() {
@@ -33,7 +32,6 @@ class UserPutRequestDTO {
                 .userNameToUpdate(ofNullable(username).map(UserName::new).orElse(null))
                 .imageToUpdate(ofNullable(image).map(Image::new).orElse(null))
                 .passwordToUpdate(password)
-                .bioToUpdate(bio)
                 .build();
     }
 }

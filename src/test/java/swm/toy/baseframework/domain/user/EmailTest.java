@@ -1,8 +1,8 @@
 package swm.toy.baseframework.domain.user;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class EmailTest {
 
@@ -11,9 +11,6 @@ class EmailTest {
         final var email = new Email("user@email.com");
         final var sameEmail = new Email("user@email.com");
 
-        assertThat(email)
-                .isEqualTo(sameEmail)
-                .hasSameHashCodeAs(sameEmail);
+        assertThat(email).isEqualTo(sameEmail).hasSameHashCodeAs(sameEmail);
     }
-
 }

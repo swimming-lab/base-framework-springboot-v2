@@ -1,9 +1,8 @@
 package swm.toy.baseframework.domain.user;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Embeddable
 class Password {
@@ -19,11 +18,9 @@ class Password {
         this.encodedPassword = encodedPassword;
     }
 
-    protected Password() {
-    }
+    protected Password() {}
 
     boolean matchesPassword(String rawPassword, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
-
 }

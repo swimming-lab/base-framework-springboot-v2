@@ -1,15 +1,14 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
+import java.nio.charset.StandardCharsets;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 
 class HmacSHA256 {
 
     private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
 
-    private HmacSHA256() {
-    }
+    private HmacSHA256() {}
 
     public static byte[] sign(byte[] secret, String message) {
         try {
@@ -26,5 +25,4 @@ class HmacSHA256 {
             super(cause);
         }
     }
-
 }

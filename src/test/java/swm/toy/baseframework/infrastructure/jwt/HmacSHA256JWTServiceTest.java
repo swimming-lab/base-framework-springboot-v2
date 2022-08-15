@@ -24,13 +24,13 @@ import static swm.toy.baseframework.infrastructure.jwt.Base64URL.base64URLFromSt
 @JsonTest
 class HmacSHA256JWTServiceTest {
 
-    private static final String JWT_HEADER_EXPECTED = base64URLFromString("{\"alg\":\"HS256\",\"type\":\"JWT\"}");
+    private static final String JWT_HEADER_EXPECTED =
+            base64URLFromString("{\"alg\":\"HS256\",\"type\":\"JWT\"}");
     private static final byte[] SECRET = "SOME_SECRET".getBytes(StandardCharsets.UTF_8);
 
     private HmacSHA256JWTService jwtService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
     @BeforeEach
     void initializeService() {
@@ -49,41 +49,44 @@ class HmacSHA256JWTServiceTest {
 
     @Test
     void when_JWTPayloadFromString_with_malformed_token_expect_IllegalArgumentException() {
-        assertThatThrownBy(() ->
-                jwtService.jwtPayloadFromJWT("MALFORMED_TOKEN-2-_without_dot")
-        ).isInstanceOf(IllegalArgumentException.class).hasMessageStartingWith("Malformed JWT:");
+        assertThatThrownBy(() -> jwtService.jwtPayloadFromJWT("MALFORMED_TOKEN-2-_without_dot"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Malformed JWT:");
     }
 
     @Test
     void when_JWTPayloadFromString_with_not_starts_with_header_expect_IllegalArgumentException() {
-        assertThatThrownBy(() ->
-                jwtService.jwtPayloadFromJWT("HEADER_bas64-._base64-payload.SIGN")
-        ).isInstanceOf(IllegalArgumentException.class).hasMessageStartingWith("Malformed JWT! Token must starts with header");
+        assertThatThrownBy(() -> jwtService.jwtPayloadFromJWT("HEADER_bas64-._base64-payload.SIGN"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Malformed JWT! Token must starts with header");
     }
 
     @Test
     void when_JWTPayloadFromString_with_invalid_sign_expect_IllegalArgumentException() {
-        assertThatThrownBy(() ->
-                jwtService.jwtPayloadFromJWT(JWT_HEADER_EXPECTED + "._base64-payload.INVALID_1_SIGN")
-        ).isInstanceOf(IllegalArgumentException.class).hasMessageStartingWith("Token has invalid signature");
+        assertThatThrownBy(
+                        () ->
+                                jwtService.jwtPayloadFromJWT(
+                                        JWT_HEADER_EXPECTED + "._base64-payload.INVALID_1_SIGN"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Token has invalid signature");
     }
 
     @Test
     void when_JWTPayloadFromString_with_invalid_payload_expect_IllegalArgumentException() {
         final var invalidPayloadToken = invalidPayloadToken();
 
-        assertThatThrownBy(() ->
-                jwtService.jwtPayloadFromJWT(invalidPayloadToken)
-        ).isInstanceOf(IllegalArgumentException.class).hasMessageStartingWith("Malformed JWT");
+        assertThatThrownBy(() -> jwtService.jwtPayloadFromJWT(invalidPayloadToken))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Malformed JWT");
     }
 
     @Test
     void when_JWTPayloadFromString_token_has_expired_expect_InvalidJWTException() {
         final var expiredToken = expiredToken();
 
-        assertThatThrownBy(() ->
-                jwtService.jwtPayloadFromJWT(expiredToken)
-        ).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Token expired");
+        assertThatThrownBy(() -> jwtService.jwtPayloadFromJWT(expiredToken))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Token expired");
     }
 
     @Test
@@ -96,7 +99,13 @@ class HmacSHA256JWTServiceTest {
         assertThat(payloadFromToken)
                 .matches(payload -> !payload.isExpired())
                 .matches(payload -> payload.getUserId() == 1L)
-                .matches(payload -> valueOf(payload).startsWith(format("{\"sub\":%d,\"name\":\"%s\",", 1L, user.getEmail())));
+                .matches(
+                        payload ->
+                                valueOf(payload)
+                                        .startsWith(
+                                                format(
+                                                        "{\"sub\":%d,\"name\":\"%s\",",
+                                                        1L, user.getEmail())));
     }
 
     private String invalidPayloadToken() {
@@ -106,8 +115,6 @@ class HmacSHA256JWTServiceTest {
 
     private String expiredToken() {
         final var user = userWithIdAndEmail(1L, "user@email.com");
-        return new HmacSHA256JWTService(SECRET, -1, new ObjectMapper())
-                .jwtFromUser(user);
+        return new HmacSHA256JWTService(SECRET, -1, new ObjectMapper()).jwtFromUser(user);
     }
-
 }

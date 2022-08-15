@@ -15,14 +15,15 @@ class UserRepositoryTest {
 
     private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
     @Test
     void when_save_user_expect_saved() {
-        var userToSave = User.of(new Email("user@email.com"),
-                new UserName("name"),
-                Password.of("rawPassword", PASSWORD_ENCODER));
+        var userToSave =
+                User.of(
+                        new Email("user@email.com"),
+                        new UserName("name"),
+                        Password.of("rawPassword", PASSWORD_ENCODER));
 
         User save = userRepository.save(userToSave);
         assertThat(save).hasNoNullFieldsOrProperties();
@@ -30,9 +31,11 @@ class UserRepositoryTest {
 
     @Test
     void when_save_user_with_image_expect_saved() {
-        var userToSave = User.of(new Email("user@email.com"),
-                new UserName("name"),
-                Password.of("rawPassword", PASSWORD_ENCODER));
+        var userToSave =
+                User.of(
+                        new Email("user@email.com"),
+                        new UserName("name"),
+                        Password.of("rawPassword", PASSWORD_ENCODER));
         var imageToSave = new Image("some-image");
 
         userToSave.changeImage(imageToSave);
@@ -41,5 +44,4 @@ class UserRepositoryTest {
                 .extracting(User::getImage)
                 .isEqualTo(imageToSave);
     }
-
 }

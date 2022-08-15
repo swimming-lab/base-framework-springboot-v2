@@ -8,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static swm.toy.baseframework.domain.user.UserUpdateRequest.builder;
 
-
 @ExtendWith(MockitoExtension.class)
 class UserUpdateRequestTest {
 
@@ -27,39 +26,40 @@ class UserUpdateRequestTest {
         assertThat(requestWithoutFields.getUserNameToUpdate()).isEmpty();
         assertThat(requestWithoutFields.getPasswordToUpdate()).isEmpty();
         assertThat(requestWithoutFields.getImageToUpdate()).isEmpty();
-        assertThat(requestWithoutFields.getBioToUpdate()).isEmpty();
     }
 
     @Test
-    void when_userUpdateRequest_created_with_all_field_expect_all_fields(@Mock Email emailToUpdate, @Mock UserName userNameToUpdate, @Mock Image imageToUpdate) {
-        final var requestWithAllField = builder().emailToUpdate(emailToUpdate)
-                .userNameToUpdate(userNameToUpdate)
-                .passwordToUpdate("passwordToUpdate")
-                .imageToUpdate(imageToUpdate)
-                .bioToUpdate("bioToUpdate")
-                .build();
+    void when_userUpdateRequest_created_with_all_field_expect_all_fields(
+            @Mock Email emailToUpdate, @Mock UserName userNameToUpdate, @Mock Image imageToUpdate) {
+        final var requestWithAllField =
+                builder()
+                        .emailToUpdate(emailToUpdate)
+                        .userNameToUpdate(userNameToUpdate)
+                        .passwordToUpdate("passwordToUpdate")
+                        .imageToUpdate(imageToUpdate)
+                        .build();
 
         assertThat(requestWithAllField)
                 .hasFieldOrPropertyWithValue("emailToUpdate", emailToUpdate)
                 .hasFieldOrPropertyWithValue("userNameToUpdate", userNameToUpdate)
                 .hasFieldOrPropertyWithValue("passwordToUpdate", "passwordToUpdate")
-                .hasFieldOrPropertyWithValue("imageToUpdate", imageToUpdate)
-                .hasFieldOrPropertyWithValue("bioToUpdate", "bioToUpdate");
+                .hasFieldOrPropertyWithValue("imageToUpdate", imageToUpdate);
     }
 
     @Test
-    void when_userUpdateRequest_created_with_all_field_expect_get_return_field(@Mock Email emailToUpdate, @Mock UserName userNameToUpdate, @Mock Image imageToUpdate) {
-        final var requestWithAllField = builder().emailToUpdate(emailToUpdate)
-                .userNameToUpdate(userNameToUpdate)
-                .passwordToUpdate("passwordToUpdate")
-                .imageToUpdate(imageToUpdate)
-                .bioToUpdate("bioToUpdate")
-                .build();
+    void when_userUpdateRequest_created_with_all_field_expect_get_return_field(
+            @Mock Email emailToUpdate, @Mock UserName userNameToUpdate, @Mock Image imageToUpdate) {
+        final var requestWithAllField =
+                builder()
+                        .emailToUpdate(emailToUpdate)
+                        .userNameToUpdate(userNameToUpdate)
+                        .passwordToUpdate("passwordToUpdate")
+                        .imageToUpdate(imageToUpdate)
+                        .build();
 
         assertThat(requestWithAllField.getEmailToUpdate()).contains(emailToUpdate);
         assertThat(requestWithAllField.getUserNameToUpdate()).contains(userNameToUpdate);
         assertThat(requestWithAllField.getPasswordToUpdate()).contains("passwordToUpdate");
         assertThat(requestWithAllField.getImageToUpdate()).contains(imageToUpdate);
-        assertThat(requestWithAllField.getBioToUpdate()).contains("bioToUpdate");
     }
 }

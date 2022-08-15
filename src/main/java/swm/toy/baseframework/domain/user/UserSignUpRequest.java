@@ -23,5 +23,4 @@ public class UserSignUpRequest {
     public String getRawPassword() {
         return rawPassword;
     }
-
 }

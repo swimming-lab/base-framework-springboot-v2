@@ -1,8 +1,8 @@
 package swm.toy.baseframework.domain.user;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
 
 @Embeddable
 public class UserName {
@@ -14,8 +14,7 @@ public class UserName {
         this.name = name;
     }
 
-    protected UserName() {
-    }
+    protected UserName() {}
 
     @Override
     public String toString() {

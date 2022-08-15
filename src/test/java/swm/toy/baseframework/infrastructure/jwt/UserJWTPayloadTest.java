@@ -1,16 +1,16 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import swm.toy.baseframework.domain.user.User;
-
 import static java.lang.String.format;
 import static java.time.Instant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static swm.toy.baseframework.domain.user.UserTestUtils.userWithIdAndEmail;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import swm.toy.baseframework.domain.user.User;
 
 @ExtendWith(MockitoExtension.class)
 class UserJWTPayloadTest {
@@ -43,8 +43,9 @@ class UserJWTPayloadTest {
         final var jwtPayload = UserJWTPayload.of(sampleUser, MAX.getEpochSecond());
 
         assertThat(jwtPayload)
-                .hasToString(format("{\"sub\":%d,\"name\":\"%s\",\"iat\":%d}",
-                        2L, "user@email.com", MAX.getEpochSecond()));
+                .hasToString(
+                        format(
+                                "{\"sub\":%d,\"name\":\"%s\",\"auth\":\"%s\",\"iat\":%d}",
+                                2L, "user@email.com", "USER", MAX.getEpochSecond()));
     }
-
 }

@@ -1,10 +1,9 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.nio.charset.StandardCharsets;
 
 @Configuration
 class JWTConfiguration {
@@ -16,5 +15,4 @@ class JWTConfiguration {
     HmacSHA256JWTService hmacSHA256JWTService(ObjectMapper objectMapper) {
         return new HmacSHA256JWTService(SECRET, JWT_DURATION_SECONDS, objectMapper);
     }
-
 }

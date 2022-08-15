@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.7.2'
 	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
 	id 'java'
+	id 'com.diffplug.gradle.spotless' version '4.5.1'
+	id 'com.google.cloud.tools.jib' version '3.2.1'
 }
 
 group = 'swm.toy'
@@ -31,14 +33,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// jwt
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5',
-			// Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
-			//'org.bouncycastle:bcprov-jdk15on:1.70',
-			'io.jsonwebtoken:jjwt-jackson:0.11.5' // or 'io.jsonwebtoken:jjwt-gson:0.11.5' for gson
-
-	// JSONParser, JSONObject설정
-//	implementation 'com.googlecode.json-simple:json-simple:1.1'
+//	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+//	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5',
+//			'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	// h2
 	runtimeOnly 'com.h2database:h2'
@@ -47,7 +44,10 @@ dependencies {
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 
 	// openapi(swagger)
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+	implementation 'io.swagger.core.v3:swagger-core:2.2.2'
+	implementation('org.springdoc:springdoc-openapi-ui:1.6.9') {
+		exclude group: 'io.swagger.core.v3', module: 'swagger-core'
+	}
 
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -57,4 +57,42 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// gradlew spotlessJavaApply
+spotless {
+	java {
+		target project.fileTree(project.rootDir) {
+			include '**/*.java'
+			exclude 'build/generated/**/*.*', 'build/generated-examples/**/*.*'
+		}
+
+		removeUnusedImports()
+		trimTrailingWhitespace()
+		googleJavaFormat().aosp()
+	}
+}
+
+// gradlew jib
+// gradlew jibDockerBuild
+jib {
+	from {
+		image = "openjdk:17-alpine"
+		platforms {
+			platform {
+				architecture = 'amd64'
+				os = 'linux'
+			}
+			platform {
+				architecture = 'arm64'
+				os = 'linux'
+			}
+		}
+	}
+	to {
+		image = "swm-${rootProject.name}"
+	}
+	container {
+		ports = ["8080"]
+	}
 }

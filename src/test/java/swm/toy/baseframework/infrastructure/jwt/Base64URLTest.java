@@ -1,17 +1,16 @@
 package swm.toy.baseframework.infrastructure.jwt;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static swm.toy.baseframework.infrastructure.jwt.Base64URL.base64URLFromString;
 import static swm.toy.baseframework.infrastructure.jwt.Base64URL.stringFromBase64URL;
 
+import java.util.Random;
+import org.junit.jupiter.api.Test;
+
 class Base64URLTest {
 
-    private final static String RAW_STRING = "something";
-    private final static String ENCODED_STRING = "c29tZXRoaW5n";
+    private static final String RAW_STRING = "something";
+    private static final String ENCODED_STRING = "c29tZXRoaW5n";
 
     @Test
     void when_encode_return_expected_string() {
@@ -36,5 +35,4 @@ class Base64URLTest {
         new Random().nextBytes(bytes);
         return new String(bytes);
     }
-
 }

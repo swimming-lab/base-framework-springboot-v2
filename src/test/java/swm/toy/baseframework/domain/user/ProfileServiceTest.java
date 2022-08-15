@@ -22,8 +22,7 @@ class ProfileServiceTest {
 
     private ProfileService profileService;
 
-    @Mock
-    private UserFindService userFindService;
+    @Mock private UserFindService userFindService;
 
     @BeforeEach
     private void initializeService() {
@@ -31,28 +30,30 @@ class ProfileServiceTest {
     }
 
     @Test
-    void when_viewProfile_with_viewer_not_exists_expect_NoSuchElementException(@Mock UserName userName) {
+    void when_viewProfile_with_viewer_not_exists_expect_NoSuchElementException(
+            @Mock UserName userName) {
         when(userFindService.findById(1L)).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.viewProfile(1L, userName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.viewProfile(1L, userName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void when_viewProfile_with_not_exists_username_expect_NoSuchElementException(@Mock User user, @Mock UserName userName) {
+    void when_viewProfile_with_not_exists_username_expect_NoSuchElementException(
+            @Mock User user, @Mock UserName userName) {
         when(userFindService.findById(1L)).thenReturn(of(user));
         when(userFindService.findByUsername(userName)).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.viewProfile(1L, userName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.viewProfile(1L, userName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void when_viewProfile_expect_viewer_view_found_user(@Mock UserName userName,
-                                                                @Mock User viewer, @Mock User userToView,
-                                                                @Mock Profile profile) {
+    void when_viewProfile_expect_viewer_view_found_user(
+            @Mock UserName userName,
+            @Mock User viewer,
+            @Mock User userToView,
+            @Mock Profile profile) {
         given(userFindService.findById(1L)).willReturn(of(viewer));
         given(userFindService.findByUsername(userName)).willReturn(of(userToView));
         given(viewer.viewProfile(userToView)).willReturn(profile);
@@ -63,16 +64,17 @@ class ProfileServiceTest {
     }
 
     @Test
-    void when_viewProfile_with_not_exists_username_expect_NoSuchElementException(@Mock UserName userName) {
+    void when_viewProfile_with_not_exists_username_expect_NoSuchElementException(
+            @Mock UserName userName) {
         when(userFindService.findByUsername(userName)).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.viewProfile(userName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.viewProfile(userName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void when_viewProfile_expect_user_getProfile(@Mock UserName userName, @Mock User user, @Mock Profile profile) {
+    void when_viewProfile_expect_user_getProfile(
+            @Mock UserName userName, @Mock User user, @Mock Profile profile) {
         given(userFindService.findByUsername(userName)).willReturn(of(user));
         given(user.getProfile()).willReturn(profile);
 
@@ -82,27 +84,30 @@ class ProfileServiceTest {
     }
 
     @Test
-    void when_followAndViewProfile_with_not_exists_followeeName_expect_NoSuchElementException(@Mock UserName followeeName) {
+    void when_followAndViewProfile_with_not_exists_followeeName_expect_NoSuchElementException(
+            @Mock UserName followeeName) {
         when(userFindService.findByUsername(followeeName)).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.followAndViewProfile(1L, followeeName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.followAndViewProfile(1L, followeeName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void when_followAndViewProfile_with_not_exists_followerId_expect_NoSuchElementException(@Mock User followee, @Mock UserName followeeName) {
+    void when_followAndViewProfile_with_not_exists_followerId_expect_NoSuchElementException(
+            @Mock User followee, @Mock UserName followeeName) {
         when(userFindService.findByUsername(followeeName)).thenReturn(of(followee));
         when(userFindService.findById(anyLong())).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.followAndViewProfile(1L, followeeName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.followAndViewProfile(1L, followeeName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void when_followAndViewProfile_expect_follower_follows_followee(
-            @Mock User follower, @Mock UserName followeeName, @Mock User followee, @Mock Profile followeeProfile) {
+            @Mock User follower,
+            @Mock UserName followeeName,
+            @Mock User followee,
+            @Mock Profile followeeProfile) {
         given(userFindService.findByUsername(followeeName)).willReturn(of(followee));
         given(userFindService.findById(anyLong())).willReturn(of(follower));
         given(follower.followUser(followee)).willReturn(follower);
@@ -114,27 +119,30 @@ class ProfileServiceTest {
     }
 
     @Test
-    void when_unfollowAndViewProfile_with_not_exists_followeeName_expect_NoSuchElementException(@Mock UserName followeeName) {
+    void when_unfollowAndViewProfile_with_not_exists_followeeName_expect_NoSuchElementException(
+            @Mock UserName followeeName) {
         when(userFindService.findByUsername(followeeName)).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.unfollowAndViewProfile(1L, followeeName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.unfollowAndViewProfile(1L, followeeName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void when_unfollowAndViewProfile_with_not_exists_followerId_expect_NoSuchElementException(@Mock User followee, @Mock UserName followeeName) {
+    void when_unfollowAndViewProfile_with_not_exists_followerId_expect_NoSuchElementException(
+            @Mock User followee, @Mock UserName followeeName) {
         when(userFindService.findByUsername(followeeName)).thenReturn(of(followee));
         when(userFindService.findById(anyLong())).thenReturn(empty());
 
-        assertThatThrownBy(() ->
-                profileService.unfollowAndViewProfile(1L, followeeName)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> profileService.unfollowAndViewProfile(1L, followeeName))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void when_unfollowAndViewProfile_expect_follower_unfollows_followee(
-            @Mock User follower, @Mock UserName followeeName, @Mock User followee, @Mock Profile followeeProfile) {
+            @Mock User follower,
+            @Mock UserName followeeName,
+            @Mock User followee,
+            @Mock Profile followeeProfile) {
         given(userFindService.findByUsername(followeeName)).willReturn(of(followee));
         given(userFindService.findById(anyLong())).willReturn(of(follower));
         given(follower.unfollowUser(followee)).willReturn(follower);
@@ -144,5 +152,4 @@ class ProfileServiceTest {
 
         then(follower).should(times(1)).unfollowUser(followee);
     }
-
 }

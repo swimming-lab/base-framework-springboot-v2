@@ -1,8 +1,8 @@
 package swm.toy.baseframework.domain.user;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class ImageTest {
 
@@ -18,8 +18,6 @@ class ImageTest {
         final var image = new Image("address");
         final var imageWithSameAddress = new Image("address");
 
-        assertThat(imageWithSameAddress)
-                .isEqualTo(image)
-                .hasSameHashCodeAs(image);
+        assertThat(imageWithSameAddress).isEqualTo(image).hasSameHashCodeAs(image);
     }
 }

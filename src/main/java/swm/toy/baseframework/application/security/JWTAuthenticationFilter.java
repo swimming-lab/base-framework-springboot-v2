@@ -16,7 +16,9 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         ofNullable(request.getHeader(AUTHORIZATION))
                 .map(authHeader -> authHeader.substring("Bearer ".length()))
                 .map(JWT::new)

@@ -25,11 +25,9 @@ class UserServiceTest {
 
     private UserService userService;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+    @Mock private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserRepository userRepository;
 
     @BeforeEach
     void initializeUserService() {
@@ -46,7 +44,8 @@ class UserServiceTest {
     }
 
     @Test
-    void when_duplicate_signUp_expect_throw_exception(@Mock UserSignUpRequest request, @Mock User user) {
+    void when_duplicate_signUp_expect_throw_exception(
+            @Mock UserSignUpRequest request, @Mock User user) {
         when(userRepository.findFirstByEmail(request.getEmail())).thenReturn(of(user));
 
         try {
@@ -83,16 +82,17 @@ class UserServiceTest {
     }
 
     @Test
-    void when_updateUser_with_invalid_id_expect_NoSuchElementException(@Mock UserUpdateRequest request) {
+    void when_updateUser_with_invalid_id_expect_NoSuchElementException(
+            @Mock UserUpdateRequest request) {
         when(userRepository.findById(1L)).thenReturn(empty());
 
-        assertThatThrownBy(
-                () -> userService.updateUser(1L, request)
-        ).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> userService.updateUser(1L, request))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void when_updateUser_expect_userRepository_save(@Mock User user, @Mock UserUpdateRequest request) {
+    void when_updateUser_expect_userRepository_save(
+            @Mock User user, @Mock UserUpdateRequest request) {
         given(userRepository.findById(1L)).willReturn(of(user));
 
         userService.updateUser(1L, request);
@@ -101,7 +101,8 @@ class UserServiceTest {
     }
 
     @Test
-    void when_updateUser_email_expect_user_changEmail(@Mock User user, @Mock UserUpdateRequest request, @Mock Email email) {
+    void when_updateUser_email_expect_user_changEmail(
+            @Mock User user, @Mock UserUpdateRequest request, @Mock Email email) {
         given(userRepository.findById(1L)).willReturn(of(user));
         given(request.getEmailToUpdate()).willReturn(of(email));
 
@@ -112,7 +113,8 @@ class UserServiceTest {
     }
 
     @Test
-    void when_updateUser_name_expect_user_changeName(@Mock User user, @Mock UserUpdateRequest request, @Mock UserName userName) {
+    void when_updateUser_name_expect_user_changeName(
+            @Mock User user, @Mock UserUpdateRequest request, @Mock UserName userName) {
         given(userRepository.findById(1L)).willReturn(of(user));
         given(request.getUserNameToUpdate()).willReturn(of(userName));
 
@@ -123,7 +125,8 @@ class UserServiceTest {
     }
 
     @Test
-    void when_updateUser_password_expect_passwordEncoder_encode_password(@Mock User user, @Mock UserUpdateRequest request) {
+    void when_updateUser_password_expect_passwordEncoder_encode_password(
+            @Mock User user, @Mock UserUpdateRequest request) {
         given(userRepository.findById(1L)).willReturn(of(user));
         given(request.getPasswordToUpdate()).willReturn(of("new-password"));
 
@@ -133,15 +136,15 @@ class UserServiceTest {
     }
 
     @Test
-    void when_updateUser_password_expect_user_changesPassword_encoded_password(@Mock User user,
-                                                                               @Mock UserUpdateRequest request,
-                                                                               @Mock Password password) {
+    void when_updateUser_password_expect_user_changesPassword_encoded_password(
+            @Mock User user, @Mock UserUpdateRequest request, @Mock Password password) {
         given(userRepository.findById(1L)).willReturn(of(user));
         given(request.getPasswordToUpdate()).willReturn(of("new-password"));
 
-
         try (var mockStatic = mockStatic(Password.class)) {
-            mockStatic.when(() -> Password.of("new-password", passwordEncoder)).thenReturn(password);
+            mockStatic
+                    .when(() -> Password.of("new-password", passwordEncoder))
+                    .thenReturn(password);
             userService.updateUser(1L, request);
         }
 
@@ -150,7 +153,8 @@ class UserServiceTest {
     }
 
     @Test
-    void when_update_image_expect_user_changeImage(@Mock User user, @Mock UserUpdateRequest request, @Mock Image image) {
+    void when_update_image_expect_user_changeImage(
+            @Mock User user, @Mock UserUpdateRequest request, @Mock Image image) {
         given(userRepository.findById(1L)).willReturn(of(user));
         given(request.getImageToUpdate()).willReturn(of(image));
 
@@ -159,16 +163,4 @@ class UserServiceTest {
         then(user).should(times(1)).changeImage(image);
         verifyNoMoreInteractions(user);
     }
-
-    @Test
-    void when_update_bio_expect_user_changes_bio(@Mock User user, @Mock UserUpdateRequest request) {
-        given(userRepository.findById(1L)).willReturn(of(user));
-        given(request.getBioToUpdate()).willReturn(of("new-bio"));
-
-        userService.updateUser(1L, request);
-
-        then(user).should(times(1)).changeBio("new-bio");
-        verifyNoMoreInteractions(user);
-    }
-
 }

@@ -1,8 +1,8 @@
 package swm.toy.baseframework.domain.user;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
 
 @Embeddable
 public class Email {
@@ -14,8 +14,7 @@ public class Email {
         this.address = address;
     }
 
-    protected Email() {
-    }
+    protected Email() {}
 
     @Override
     public String toString() {

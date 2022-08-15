@@ -23,18 +23,25 @@ public class UserService implements UserFindService {
     @Transactional
     public User signUp(UserSignUpRequest request) {
         final var encodedPassword = Password.of(request.getRawPassword(), passwordEncoder);
-        userRepository.findFirstByEmail(request.getEmail()).stream().findAny().ifPresent(
-                entity -> {throw new AppException(ErrorCode.DUPLICATED_USER);});
+        userRepository.findFirstByEmail(request.getEmail()).stream()
+                .findAny()
+                .ifPresent(
+                        entity -> {
+                            throw new AppException(ErrorCode.DUPLICATED_USER);
+                        });
 
-        return userRepository.save(User.of(request.getEmail(),
-                request.getUserName(),
-                encodedPassword,
-                Authority.of("ROLE_USER")));
+        return userRepository.save(
+                User.of(
+                        request.getEmail(),
+                        request.getUserName(),
+                        encodedPassword,
+                        Authority.of("ROLE_USER")));
     }
 
     @Transactional(readOnly = true)
     public Optional<User> login(Email email, String rawPassword) {
-        return userRepository.findFirstByEmail(email)
+        return userRepository
+                .findFirstByEmail(email)
                 .filter(user -> user.matchesPassword(rawPassword, passwordEncoder));
     }
 
@@ -52,18 +59,12 @@ public class UserService implements UserFindService {
     @Transactional
     public User updateUser(long id, UserUpdateRequest request) {
         final var user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        request.getEmailToUpdate()
-                .ifPresent(user::changeEmail);
-        request.getUserNameToUpdate()
-                .ifPresent(user::changeName);
+        request.getEmailToUpdate().ifPresent(user::changeEmail);
+        request.getUserNameToUpdate().ifPresent(user::changeName);
         request.getPasswordToUpdate()
                 .map(rawPassword -> Password.of(rawPassword, passwordEncoder))
                 .ifPresent(user::changePassword);
-        request.getImageToUpdate()
-                .ifPresent(user::changeImage);
-        request.getBioToUpdate()
-                .ifPresent(user::changeBio);
+        request.getImageToUpdate().ifPresent(user::changeImage);
         return userRepository.save(user);
     }
-
 }

@@ -19,9 +19,6 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @JsonTypeInfo(include = WRAPPER_OBJECT, use = NAME)
 class UserLoginRequestDTO {
 
-    @Email
-    String email;
-    @NotBlank
-    String password;
-
+    @Email String email;
+    @NotBlank String password;
 }

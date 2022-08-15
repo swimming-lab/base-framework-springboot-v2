@@ -1,17 +1,16 @@
 package swm.toy.baseframework.application.user;
 
+import static java.util.Optional.ofNullable;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static swm.toy.baseframework.application.user.ProfileModel.fromProfile;
+
+import java.util.NoSuchElementException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import swm.toy.baseframework.domain.jwt.JWTPayload;
 import swm.toy.baseframework.domain.user.ProfileService;
 import swm.toy.baseframework.domain.user.UserName;
 import swm.toy.baseframework.infrastructure.jwt.UserJWTPayload;
-
-import java.util.NoSuchElementException;
-
-import static java.util.Optional.ofNullable;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static swm.toy.baseframework.application.user.ProfileModel.fromProfile;
 
 @RequestMapping("/profiles")
 @RestController
@@ -24,8 +23,8 @@ class ProfileRestController {
     }
 
     @GetMapping("/{username}")
-    public ProfileModel getProfileByUsername(@AuthenticationPrincipal UserJWTPayload jwtPayload,
-                                             @PathVariable UserName username) {
+    public ProfileModel getProfileByUsername(
+            @AuthenticationPrincipal UserJWTPayload jwtPayload, @PathVariable UserName username) {
         return ofNullable(jwtPayload)
                 .map(JWTPayload::getUserId)
                 .map(viewerId -> profileService.viewProfile(viewerId, username))
@@ -34,18 +33,19 @@ class ProfileRestController {
     }
 
     @PostMapping("/{username}/follow")
-    public ProfileModel followUser(@AuthenticationPrincipal UserJWTPayload followerPayload,
-                                   @PathVariable UserName username) {
+    public ProfileModel followUser(
+            @AuthenticationPrincipal UserJWTPayload followerPayload,
+            @PathVariable UserName username) {
         return fromProfile(
                 profileService.followAndViewProfile(followerPayload.getUserId(), username));
     }
 
     @DeleteMapping("/{username}/follow")
-    public ProfileModel unfollowUser(@AuthenticationPrincipal UserJWTPayload followerPayload,
-                                     @PathVariable UserName username) {
+    public ProfileModel unfollowUser(
+            @AuthenticationPrincipal UserJWTPayload followerPayload,
+            @PathVariable UserName username) {
         return fromProfile(
-                profileService.unfollowAndViewProfile(followerPayload.getUserId(), username)
-        );
+                profileService.unfollowAndViewProfile(followerPayload.getUserId(), username));
     }
 
     @ResponseStatus(NOT_FOUND)

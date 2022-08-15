@@ -21,6 +21,9 @@ public class Authority {
         this.authorityName = authorityName;
     }
 
-    protected Authority() {
+    protected Authority() {}
+
+    public String getAuthorityName() {
+        return authorityName;
     }
 }

@@ -18,8 +18,6 @@ class UserNameTest {
         final var userName = new UserName("name");
         final var userNameWithSameName = new UserName("name");
 
-        assertThat(userNameWithSameName)
-                .isEqualTo(userName)
-                .hasSameHashCodeAs(userName);
+        assertThat(userNameWithSameName).isEqualTo(userName).hasSameHashCodeAs(userName);
     }
 }

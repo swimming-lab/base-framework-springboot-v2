@@ -10,7 +10,6 @@ public class UserUpdateRequest {
     private final UserName userNameToUpdate;
     private final String passwordToUpdate;
     private final Image imageToUpdate;
-    private final String bioToUpdate;
 
     public static UserUpdateRequestBuilder builder() {
         return new UserUpdateRequestBuilder();
@@ -32,16 +31,11 @@ public class UserUpdateRequest {
         return ofNullable(imageToUpdate);
     }
 
-    Optional<String> getBioToUpdate() {
-        return ofNullable(bioToUpdate);
-    }
-
     private UserUpdateRequest(UserUpdateRequestBuilder builder) {
         this.emailToUpdate = builder.emailToUpdate;
         this.userNameToUpdate = builder.userNameToUpdate;
         this.passwordToUpdate = builder.passwordToUpdate;
         this.imageToUpdate = builder.imageToUpdate;
-        this.bioToUpdate = builder.bioToUpdate;
     }
 
     public static class UserUpdateRequestBuilder {
@@ -49,7 +43,6 @@ public class UserUpdateRequest {
         private UserName userNameToUpdate;
         private String passwordToUpdate;
         private Image imageToUpdate;
-        private String bioToUpdate;
 
         public UserUpdateRequestBuilder emailToUpdate(Email emailToUpdate) {
             this.emailToUpdate = emailToUpdate;
@@ -68,11 +61,6 @@ public class UserUpdateRequest {
 
         public UserUpdateRequestBuilder imageToUpdate(Image imageToUpdate) {
             this.imageToUpdate = imageToUpdate;
-            return this;
-        }
-
-        public UserUpdateRequestBuilder bioToUpdate(String bioToUpdate) {
-            this.bioToUpdate = bioToUpdate;
             return this;
         }
 

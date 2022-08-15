@@ -19,16 +19,14 @@ public class User extends BaseEntity {
     @Id
     private Long id;
 
-    @Embedded
-    private Email email;
+    @Embedded private Email email;
 
-    @Embedded
-    private Profile profile;
+    @Embedded private Profile profile;
 
-    @Embedded
-    private Password password;
+    @Embedded private Password password;
 
-    @JoinTable(name = "user_followings",
+    @JoinTable(
+            name = "user_followings",
             joinColumns = @JoinColumn(name = "follower_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "followee_id", referencedColumnName = "id"))
     @OneToMany(cascade = REMOVE)
@@ -38,7 +36,9 @@ public class User extends BaseEntity {
     @JoinTable(
             name = "user_authority",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+            inverseJoinColumns = {
+                @JoinColumn(name = "authority_name", referencedColumnName = "authority_name")
+            })
     private Set<Authority> authorities = new HashSet<>();
 
     static User of(Email email, UserName name, Password password) {
@@ -58,8 +58,7 @@ public class User extends BaseEntity {
         }
     }
 
-    protected User() {
-    }
+    protected User() {}
 
     User followUser(User followee) {
         followingUsers.add(followee);
@@ -95,10 +94,6 @@ public class User extends BaseEntity {
         profile.changeUserName(userName);
     }
 
-    void changeBio(String bio) {
-        profile.changeBio(bio);
-    }
-
     void changeImage(Image image) {
         profile.changeImage(image);
     }
@@ -115,12 +110,12 @@ public class User extends BaseEntity {
         return profile.getUserName();
     }
 
-    String getBio() {
-        return profile.getBio();
-    }
-
     Image getImage() {
         return profile.getImage();
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
     @Override

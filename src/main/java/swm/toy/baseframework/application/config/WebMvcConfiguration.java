@@ -1,4 +1,4 @@
-package swm.toy.baseframework.application;
+package swm.toy.baseframework.application.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,8 @@ import org.springframework.data.web.config.PageableHandlerMethodArgumentResolver
 class WebMvcConfiguration {
 
     @Bean
-    PageableHandlerMethodArgumentResolverCustomizer pageableHandlerMethodArgumentResolverCustomizer() {
+    PageableHandlerMethodArgumentResolverCustomizer
+            pageableHandlerMethodArgumentResolverCustomizer() {
         return pageableResolver -> {
             pageableResolver.setSizeParameterName("limit");
             pageableResolver.setPageParameterName("offset");

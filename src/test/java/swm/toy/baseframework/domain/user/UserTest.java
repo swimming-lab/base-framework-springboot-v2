@@ -13,28 +13,17 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class UserTest {
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+    @Mock private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private Email emailMock;
-    @Mock
-    private UserName userNameMock;
-    @Mock
-    private Password passwordMock;
+    @Mock private Email emailMock;
+    @Mock private UserName userNameMock;
+    @Mock private Password passwordMock;
 
     @Test
     void when_create_user_getImage_return_null() {
         final var user = User.of(emailMock, userNameMock, passwordMock);
 
         assertThat(user.getImage()).isNull();
-    }
-
-    @Test
-    void when_create_user_getBio_return_null() {
-        final var user = User.of(emailMock, userNameMock, passwordMock);
-
-        assertThat(user.getBio()).isNull();
     }
 
     @Test
@@ -50,13 +39,12 @@ class UserTest {
     }
 
     @Test
-    void when_user_have_same_email_expect_equal_and_hashCode(@Mock UserName otherName, @Mock Password otherPassword) {
+    void when_user_have_same_email_expect_equal_and_hashCode(
+            @Mock UserName otherName, @Mock Password otherPassword) {
         final var user = User.of(emailMock, userNameMock, passwordMock);
         final var userWithSameEmail = User.of(emailMock, otherName, otherPassword);
 
-        assertThat(userWithSameEmail)
-                .isEqualTo(user)
-                .hasSameHashCodeAs(user);
+        assertThat(userWithSameEmail).isEqualTo(user).hasSameHashCodeAs(user);
     }
 
     @Test
@@ -64,8 +52,7 @@ class UserTest {
         final var user = User.of(emailMock, userNameMock, passwordMock);
         final var otherUser = User.of(otherEmail, userNameMock, passwordMock);
 
-        assertThat(user.viewProfile(otherUser))
-                .hasFieldOrPropertyWithValue("following", false);
+        assertThat(user.viewProfile(otherUser)).hasFieldOrPropertyWithValue("following", false);
     }
 
     @Test
@@ -87,7 +74,8 @@ class UserTest {
     }
 
     @Test
-    void when_changePassword_expect_matchesPassword_matches_new_password(@Mock Password passwordToChange) {
+    void when_changePassword_expect_matchesPassword_matches_new_password(
+            @Mock Password passwordToChange) {
         final var user = User.of(emailMock, userNameMock, passwordMock);
 
         user.changePassword(passwordToChange);
@@ -103,15 +91,6 @@ class UserTest {
         user.changeName(userNameToChange);
 
         assertThat(user.getName()).isEqualTo(userNameToChange);
-    }
-
-    @Test
-    void when_changeBio_expect_getBio_return_new_bio() {
-        final var user = User.of(emailMock, userNameMock, passwordMock);
-
-        user.changeBio("new bio");
-
-        assertThat(user.getBio()).isEqualTo("new bio");
     }
 
     @Test

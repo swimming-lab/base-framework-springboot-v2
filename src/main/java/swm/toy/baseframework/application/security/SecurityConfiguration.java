@@ -3,6 +3,7 @@ package swm.toy.baseframework.application.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +21,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -30,37 +32,48 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/error",
                         "/h2/**",
                         "/swagger-ui.html",
-                        "/webjars/**",
+                        "/swagger/**",
+                        "/swagger-ui/**",
                         "/swagger-resources/**",
-                        "/v3/api-docs"
-                );
+                        "/webjars/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/swagger-config");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.cors().configurationSource(request -> {
-            var cors = new CorsConfiguration();
-            cors.setAllowedOrigins(
-                    List.of("http://localhost:8080", "https://editor.swagger.io"));
-            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            cors.setAllowedHeaders(List.of("*"));
-            return cors;
-        });
+        http.cors()
+                .configurationSource(
+                        request -> {
+                            var cors = new CorsConfiguration();
+                            cors.setAllowedOrigins(
+                                    List.of("http://localhost:8080", "https://editor.swagger.io"));
+                            cors.setAllowedMethods(
+                                    List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            cors.setAllowedHeaders(List.of("*"));
+                            return cors;
+                        });
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and();
-        http = http.formLogin().disable()
-                .headers().frameOptions().sameOrigin().and();
+        http = http.formLogin().disable().headers().frameOptions().sameOrigin().and();
         http.logout().disable();
-        http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(
+                new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
-                .antMatchers(POST, "/users", "/users/login").permitAll()
-                .antMatchers(GET, "/profiles/*").permitAll()
-                .antMatchers(GET, "/articles/**").permitAll()
-                .antMatchers(GET, "/tags/**").permitAll()
-                .anyRequest().authenticated();
+                //                .antMatchers(GET, "/admin/**").hasRole("ADMIN")
+                .antMatchers(POST, "/users", "/users/login")
+                .permitAll()
+                .antMatchers(GET, "/profiles/*")
+                .permitAll()
+                .antMatchers(GET, "/articles/**")
+                .permitAll()
+                .antMatchers(GET, "/tags/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
     }
 
     @Bean

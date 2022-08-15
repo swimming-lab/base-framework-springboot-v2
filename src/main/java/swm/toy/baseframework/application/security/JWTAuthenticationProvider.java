@@ -8,7 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import swm.toy.baseframework.domain.jwt.JWTDeserializer;
 import swm.toy.baseframework.domain.jwt.JWTPayload;
 
-import static java.util.Collections.singleton;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import static java.util.Optional.of;
 
 class JWTAuthenticationProvider implements AuthenticationProvider {
@@ -20,11 +22,16 @@ class JWTAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return of(authentication).map(JWTAuthenticationFilter.JWT.class::cast)
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException {
+        return of(authentication)
+                .map(JWTAuthenticationFilter.JWT.class::cast)
                 .map(JWTAuthenticationFilter.JWT::getPrincipal)
                 .map(Object::toString)
-                .map(token -> new JWTAuthentication(token, jwtDeserializer.jwtPayloadFromJWT(token)))
+                .map(
+                        token ->
+                                new JWTAuthentication(
+                                        token, jwtDeserializer.jwtPayloadFromJWT(token)))
                 .orElseThrow(IllegalStateException::new);
     }
 
@@ -40,7 +47,10 @@ class JWTAuthenticationProvider implements AuthenticationProvider {
         private final String token;
 
         private JWTAuthentication(String token, JWTPayload jwtPayload) {
-            super(singleton(new SimpleGrantedAuthority("USER")));
+            super(
+                    Arrays.stream(jwtPayload.getAuth().split(","))
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList()));
             super.setAuthenticated(true);
             this.jwtPayload = jwtPayload;
             this.token = token;
@@ -56,5 +66,4 @@ class JWTAuthenticationProvider implements AuthenticationProvider {
             return token;
         }
     }
-
 }
