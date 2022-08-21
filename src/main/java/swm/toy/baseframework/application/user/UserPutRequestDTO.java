@@ -1,5 +1,9 @@
 package swm.toy.baseframework.application.user;
 
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+import static java.util.Optional.ofNullable;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
@@ -10,10 +14,6 @@ import swm.toy.baseframework.domain.user.Image;
 import swm.toy.baseframework.domain.user.UserName;
 import swm.toy.baseframework.domain.user.UserUpdateRequest;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
-import static java.util.Optional.ofNullable;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,10 +21,11 @@ import static java.util.Optional.ofNullable;
 @JsonTypeInfo(include = WRAPPER_OBJECT, use = NAME)
 class UserPutRequestDTO {
 
-    String email;
-    String username;
-    String password;
-    String image;
+    private String email;
+    private String username;
+    private String password;
+    private String image;
+    private String status;
 
     UserUpdateRequest toUpdateRequest() {
         return UserUpdateRequest.builder()
@@ -32,6 +33,7 @@ class UserPutRequestDTO {
                 .userNameToUpdate(ofNullable(username).map(UserName::new).orElse(null))
                 .imageToUpdate(ofNullable(image).map(Image::new).orElse(null))
                 .passwordToUpdate(password)
+                .statusToUpdate(status)
                 .build();
     }
 }

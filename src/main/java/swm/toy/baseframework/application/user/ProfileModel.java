@@ -1,9 +1,9 @@
 package swm.toy.baseframework.application.user;
 
+import static java.lang.String.valueOf;
+
 import lombok.Value;
 import swm.toy.baseframework.domain.user.Profile;
-
-import static java.lang.String.valueOf;
 
 @Value
 public class ProfileModel {

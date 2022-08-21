@@ -1,13 +1,12 @@
 package swm.toy.baseframework.domain.user;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swm.toy.baseframework.infrastructure.exception.AppException;
 import swm.toy.baseframework.infrastructure.exception.ErrorCode;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserFindService {
@@ -65,6 +64,9 @@ public class UserService implements UserFindService {
                 .map(rawPassword -> Password.of(rawPassword, passwordEncoder))
                 .ifPresent(user::changePassword);
         request.getImageToUpdate().ifPresent(user::changeImage);
+        request.getStatusToUpdate()
+                .map(statusToUpdate -> UserStatus.valueOf(statusToUpdate))
+                .ifPresent(user::changeStatus);
         return userRepository.save(user);
     }
 }

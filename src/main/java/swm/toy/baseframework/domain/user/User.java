@@ -1,15 +1,14 @@
 package swm.toy.baseframework.domain.user;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import swm.toy.baseframework.domain.common.BaseEntity;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import static javax.persistence.CascadeType.REMOVE;
-import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import swm.toy.baseframework.domain.common.BaseEntity;
 
 @Table(name = "users")
 @Entity
@@ -24,6 +23,9 @@ public class User extends BaseEntity {
     @Embedded private Profile profile;
 
     @Embedded private Password password;
+
+    @Convert(converter = UserStatusConverter.class)
+    private UserStatus status = UserStatus.USED;
 
     @JoinTable(
             name = "user_followings",
@@ -98,6 +100,10 @@ public class User extends BaseEntity {
         profile.changeImage(image);
     }
 
+    void changeStatus(UserStatus status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
@@ -116,6 +122,10 @@ public class User extends BaseEntity {
 
     public Set<Authority> getAuthorities() {
         return authorities;
+    }
+
+    public UserStatus getStatus() {
+        return status;
     }
 
     @Override

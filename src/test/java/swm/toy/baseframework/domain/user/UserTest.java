@@ -1,14 +1,14 @@
 package swm.toy.baseframework.domain.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserTest {
@@ -100,5 +100,14 @@ class UserTest {
         user.changeImage(imageToChange);
 
         assertThat(user.getImage()).isEqualTo(imageToChange);
+    }
+
+    @Test
+    void when_changeStatus_expect_getStatus_return_new_status(@Mock UserStatus statusToChange) {
+        final var user = User.of(emailMock, userNameMock, passwordMock);
+
+        user.changeStatus(statusToChange);
+
+        assertThat(user.getStatus()).isEqualTo(statusToChange);
     }
 }
